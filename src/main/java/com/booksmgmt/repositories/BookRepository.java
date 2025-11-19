@@ -14,6 +14,7 @@ public interface BookRepository extends ReactiveCrudRepository<Book, Integer> {
     // we can use findBy functions.
     Mono<Book> findByName(String name);
     Mono<Book> findByBookIdAndName(int bookId, String name);
+    Flux<Book> findByAuthor(String author);
     Flux<Book> findByBookIdOrName(int bookId, String name);
     Flux<Book> findByPublisher(String publisher);
     Flux<Book> findByNameAndAuthor(String name,String author);
