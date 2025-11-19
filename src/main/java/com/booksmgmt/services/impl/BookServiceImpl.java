@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+
 @Service
 public class BookServiceImpl implements BookService {
     private BookRepository bookRepository;
@@ -17,13 +19,27 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Mono<Book> create(Book book) {
-        Mono<Book> bookMono = bookRepository.save(book);
+        // for learning reactive programming, add some prints
+        System.out.println(Thread.currentThread().getName());
+        Mono<Book> bookMono = bookRepository.save(book).doOnNext( data -> {
+            System.out.println(Thread.currentThread().getName());
+            }
+        );
         return bookMono;
     }
 
     @Override
     public Flux<Book> getAll() {
-        return bookRepository.findAll();
+        //adding delay to see that api calls are asynchronous
+        // and we can cancel also in between.
+        return bookRepository
+                .findAll()
+                .delayElements(Duration.ofSeconds(2))
+                .log()
+                .map(book -> {
+                    book.setName(book.getName().toUpperCase());
+                    return book;
+                });
     }
 
     @Override
