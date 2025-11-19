@@ -40,4 +40,9 @@ public class BookController {
     public Mono<Void> deleteBook(@PathVariable int bookId) {
         return bookService.delete(bookId);
     }
+
+    @GetMapping("/search")
+    public Flux<Book> searchBooks(@RequestParam("query") String query) {
+        return bookService.search(query);
+    }
 }
